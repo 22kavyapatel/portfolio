@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;
+  --accent:#e8c547;--accent2:#f0a500;
+  --text:#f5f0e8;--muted:#888;--border:#222;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none}
+.cursor{position:fixed;width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s}
+.cursor-trail{position:fixed;width:32px;height:32px;border:1px solid var(--accent);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .25s ease;opacity:.4}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--accent);letter-spacing:2px}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.85rem;letter-spacing:1.5px;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--accent)}
+
+section{padding:6rem 3rem;max-width:1100px;margin:0 auto}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:8rem;padding-bottom:4rem;position:relative;overflow:hidden}
+.hero-tag{font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;opacity:0;animation:fadeUp .6s .2s forwards}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,7vw,6rem);font-weight:900;line-height:1.05;margin-bottom:1.5rem;opacity:0;animation:fadeUp .7s .4s forwards}
+.hero h1 span{color:var(--accent);display:block}
+.hero-desc{font-size:1.1rem;color:var(--muted);max-width:480px;line-height:1.8;margin-bottom:2.5rem;opacity:0;animation:fadeUp .7s .6s forwards}
+.hero-btns{display:flex;gap:1rem;opacity:0;animation:fadeUp .7s .8s forwards}
+.btn-primary{background:var(--accent);color:#000;padding:.85rem 2rem;border:none;font-family:'DM Sans',sans-serif;font-weight:500;font-size:.9rem;letter-spacing:1px;cursor:none;transition:transform .2s,background .2s}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-2px)}
+.btn-secondary{background:transparent;color:var(--text);padding:.85rem 2rem;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:.9rem;letter-spacing:1px;cursor:none;transition:border-color .2s,transform .2s}
+.btn-secondary:hover{border-color:var(--accent);transform:translateY(-2px)}
+
+.hero-bg{position:absolute;right:-10%;top:10%;width:55%;height:80%;background:radial-gradient(ellipse at 60% 40%,rgba(232,197,71,.06) 0%,transparent 70%);pointer-events:none}
+.hero-line{position:absolute;right:8%;top:20%;width:1px;height:60%;background:linear-gradient(to bottom,transparent,var(--accent),transparent);opacity:.3}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;color:var(--muted);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;opacity:0;animation:fadeUp .7s 1.2s forwards}
+.scroll-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:bounce 1.5s infinite}
+
+/* ABOUT */
+.section-label{font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:3rem;line-height:1.2}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.about-img{aspect-ratio:3/4;background:var(--surface2);border:1px solid var(--border);position:relative;overflow:hidden}
+.about-img::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(232,197,71,.1),transparent)}
+.about-img-label{position:absolute;bottom:1.5rem;left:1.5rem;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+.about-avatar{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:5rem;color:rgba(232,197,71,.2)}
+.about-text p{color:var(--muted);line-height:1.9;margin-bottom:1.5rem;font-size:.95rem}
+.stats-row{display:flex;gap:2rem;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)}
+.stat{text-align:left}
+.stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--accent);display:block}
+.stat-lbl{font-size:.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+
+/* SKILLS */
+.skills-section{background:var(--surface);margin:0;padding:6rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.skills-inner{max-width:1100px;margin:0 auto;padding:0 3rem}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--border);margin-top:3rem}
+.skill-cell{background:var(--bg);padding:2rem 1.5rem;transition:background .3s}
+.skill-cell:hover{background:var(--surface2)}
+.skill-icon{font-size:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+.skill-name{font-size:.9rem;font-weight:500;margin-bottom:.4rem}
+.skill-bar{height:2px;background:var(--border);margin-top:.75rem;overflow:hidden}
+.skill-fill{height:100%;background:var(--accent);transform-origin:left;transform:scaleX(0);transition:transform 1s ease}
+.skill-fill.animated{transform:scaleX(1)}
+
+/* PROJECTS */
+.projects-grid{display:grid;gap:1.5rem;margin-top:3rem}
+.project-card{background:var(--surface);border:1px solid var(--border);padding:2rem;display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:start;transition:border-color .3s,transform .3s;position:relative;overflow:hidden}
+.project-card::before{content:'';position:absolute;left:0;top:0;width:3px;height:0;background:var(--accent);transition:height .3s}
+.project-card:hover{border-color:rgba(232,197,71,.3);transform:translateX(4px)}
+.project-card:hover::before{height:100%}
+.project-num{font-family:'Playfair Display',serif;font-size:.75rem;color:rgba(232,197,71,.4);letter-spacing:2px;margin-bottom:.5rem}
+.project-name{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:.75rem}
+.project-desc{color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:1.25rem}
+.project-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.tag{background:var(--surface2);border:1px solid var(--border);padding:.3rem .75rem;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.project-link{width:48px;height:48px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.2rem;text-decoration:none;transition:background .3s,color .3s,border-color .3s;flex-shrink:0;margin-top:.25rem}
+.project-link:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+
+/* CONTACT */
+.contact-section{text-align:center}
+.contact-email{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .3s;display:inline-block;margin:2rem 0}
+.contact-email:hover{border-color:var(--accent)}
+.social-row{display:flex;justify-content:center;gap:1rem;margin-top:2rem}
+.social-btn{padding:.7rem 1.5rem;border:1px solid var(--border);color:var(--muted);text-decoration:none;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;transition:all .3s}
+.social-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+footer{border-top:1px solid var(--border);padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
+.footer-text{color:var(--muted);font-size:.78rem;letter-spacing:1px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<nav>
+  <div class="logo">YN.</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <section style="padding-top:0;padding-bottom:0">
+    <p class="hero-tag">Available for work &nbsp;·&nbsp; Full Stack Developer</p>
+    <h1>Kavya<span>Creates Digital</span>Experiences.</h1>
+    <p class="hero-desc">I design and build beautiful, functional web products that solve real problems — from concept to deployment.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">View My Work</button>
+      <button class="btn-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get In Touch</button>
+    </div>
+  </section>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-dot"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <p class="section-label">01 — About</p>
+    <h2 class="section-title">The Person Behind<br>The Code</h2>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-img">
+      <div class="about-avatar">YN</div>
+      <span class="about-img-label">Your Photo Here</span>
+    </div>
+    <div>
+      <p>Hi! I'm <strong style="color:var(--text)">Kavya</strong>, a passionate developer based in Surat, Gujarat. I love turning complex problems into clean, elegant solutions that users actually enjoy using.</p>
+      <p>With a strong foundation in both frontend and backend development, I bring ideas to life through thoughtful design and robust engineering. When I'm not coding, I'm exploring new technologies or contributing to open-source.</p>
+      <p>I believe great software is both functional and beautiful — and I work hard to deliver both.</p>
+      <div class="stats-row">
+        <div class="stat"><span class="stat-num">12+</span><span class="stat-lbl">Projects Done</span></div>
+        <div class="stat"><span class="stat-num">3+</span><span class="stat-lbl">Years Exp.</span></div>
+        <div class="stat"><span class="stat-num">8+</span><span class="stat-lbl">Happy Clients</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<div class="skills-section" id="skills">
+  <div class="skills-inner">
+    <div class="reveal">
+      <p class="section-label">02 — Skills</p>
+      <h2 class="section-title">What I Work With</h2>
+    </div>
+    <div class="skills-grid reveal" id="skillsGrid">
+      <div class="skill-cell"><div class="skill-icon">⚛</div><div class="skill-name">React</div><div class="skill-bar"><div class="skill-fill" data-w=".9"></div></div></div>
+      <div class="skill-cell"><div class="skill-icon">🟨</div><div class="skill-name">JavaScript</div><div class="skill-bar"><div class="skill-fill" data-w=".88"></div></div></div>
+      <div class="skill-cell"><div class="skill-icon">🐍</div><div class="skill-name">Python</div><div class="skill-bar"><div class="skill-fill" data-w=".8"></div></div></div>
+      <div class="skill-cell"><div class="skill-icon">🎨</div><div class="skill-name">CSS / Tailwind</div><div class="skill-bar"><div class="skill-fill" data-w=".85"></div></div></div>
+      <div class="skill-cell"><div class="skill-icon">🗄</div><div class="skill-name">Node.js</div><div class="skill-bar"><div class="skill-fill" data-w=".75"></div></div></div>
+      <div class="skill-cell"><div class="skill-icon">🛢</div><div class="skill-name">SQL / MongoDB</div><div class="skill-bar"><div class="skill-fill" data-w=".7"></div></div></div>
+      <div class="skill-cell"><div class="skill-icon">☁</div><div class="skill-name">AWS / Cloud</div><div class="skill-bar"><div class="skill-fill" data-w=".6"></div></div></div>
+      <div class="skill-cell"><div class="skill-icon">🐙</div><div class="skill-name">Git / GitHub</div><div class="skill-bar"><div class="skill-fill" data-w=".92"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal">
+    <p class="section-label">03 — Projects</p>
+    <h2 class="section-title">Things I've Built</h2>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <div>
+        <p class="project-num">001</p>
+        <h3 class="project-name">E-Commerce Platform</h3>
+        <p class="project-desc">A full-stack online store with real-time inventory, payment integration (Razorpay), and an admin dashboard. Handles 500+ products with smooth UX.</p>
+        <div class="project-tags"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">MongoDB</span><span class="tag">Razorpay</span></div>
+      </div>
+      <a class="project-link" href="#" title="View Project">↗</a>
+    </div>
+    <div class="project-card reveal">
+      <div>
+        <p class="project-num">002</p>
+        <h3 class="project-name">Task Management App</h3>
+        <p class="project-desc">A collaborative project management tool with drag-and-drop boards, real-time updates, and team collaboration features inspired by Trello.</p>
+        <div class="project-tags"><span class="tag">React</span><span class="tag">Firebase</span><span class="tag">Tailwind</span></div>
+      </div>
+      <a class="project-link" href="#" title="View Project">↗</a>
+    </div>
+    <div class="project-card reveal">
+      <div>
+        <p class="project-num">003</p>
+        <h3 class="project-name">Weather Dashboard</h3>
+        <p class="project-desc">A beautiful weather app with 7-day forecasts, location search, animated weather icons, and a clean data visualization layer using Chart.js.</p>
+        <div class="project-tags"><span class="tag">JavaScript</span><span class="tag">OpenWeather API</span><span class="tag">Chart.js</span></div>
+      </div>
+      <a class="project-link" href="#" title="View Project">↗</a>
+    </div>
+    <div class="project-card reveal">
+      <div>
+        <p class="project-num">004</p>
+        <h3 class="project-name">Portfolio Generator</h3>
+        <p class="project-desc">A tool that lets developers generate a beautiful portfolio site by filling out a simple form. Exports clean, deployable HTML/CSS in one click.</p>
+        <div class="project-tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">Jinja2</span></div>
+      </div>
+      <a class="project-link" href="#" title="View Project">↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="reveal">
+    <p class="section-label">04 — Contact</p>
+    <h2 class="section-title">Let's Work Together</h2>
+    <p style="color:var(--muted);max-width:440px;margin:0 auto 1rem;line-height:1.8;font-size:.95rem">Have a project in mind? I'm currently open to freelance and full-time opportunities. Drop me a message!</p>
+    <a class="contact-email" href="PatelKavya2247@gmail.com">PatelKavya2247@gmail.com</a>
+    <div class="social-row">
+      <a class="social-btn" href="#">GitHub</a>
+      <a class="social-btn" href="#">LinkedIn</a>
+      
+      <a class="social-btn" href="#">Resume ↓</a>
+    </div>
+  </div>
+</section>
+
+<div style="border-top:1px solid var(--border);padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center">
+  <span class="footer-text">© 2026 Patel Kavya</span>
+  <span class="footer-text">Built with passion ✦ Surat, India</span>
+</div>
+
+<script>
+const cursor = document.getElementById('cursor');
+const trail = document.getElementById('cursorTrail');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    trail.style.left = e.clientX + 'px';
+    trail.style.top = e.clientY + 'px';
+  }, 80);
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(el => {
+    if(el.isIntersecting) {
+      el.target.classList.add('visible');
+      if(el.target.id === 'skillsGrid' || el.target.closest('#skillsGrid')) {
+        document.querySelectorAll('.skill-fill').forEach((fill,i) => {
+          setTimeout(() => {
+            fill.style.transform = `scaleX(${fill.dataset.w})`;
+          }, i * 100);
+        });
+      }
+    }
+  });
+}, {threshold: 0.15});
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+document.querySelectorAll('.skill-fill').forEach(fill => {
+  fill.style.transition = 'transform 1s ease';
+});
+
+const skillsReveal = document.querySelector('#skillsGrid');
+if(skillsReveal) {
+  const skillObs = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting) {
+      document.querySelectorAll('.skill-fill').forEach((fill,i) => {
+        setTimeout(() => {
+          fill.style.transform = `scaleX(${fill.dataset.w})`;
+        }, i*100);
+      });
+    }
+  }, {threshold:0.3});
+  skillObs.observe(skillsReveal);
+}
+</script>
+</body>
+</html>
