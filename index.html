@@ -79,7 +79,12 @@ h2{font-family:var(--serif);font-weight:400;font-size:clamp(2.2rem,4.5vw,3.4rem)
 .proj p{color:var(--muted);font-size:.98rem}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
 .tags span{font-size:.8rem;font-weight:500;padding:3px 11px;border-radius:6px;background:var(--paper);border:1px solid var(--line)}
-.go{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem}
+.proj{position:relative}
+.go{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;text-decoration:none;color:inherit}
+.go::after{content:"";position:absolute;inset:0}
+.actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:6px}
+.live{position:relative;z-index:2;padding:8px 16px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.92rem;text-decoration:none}
+.live:hover{background:#f7b975}
 .go svg{width:18px;height:18px;fill:currentColor}
 
 /* CONTACT */
@@ -133,7 +138,7 @@ footer{text-align:center;padding:26px;color:var(--muted);font-size:.9rem}
 
 <section class="block" id="projects" style="padding-top:20px">
   <h2>Selected projects</h2>
-  <p class="sub">Select a project to open its source code on GitHub.</p>
+  <p class="sub">Open a live demo where available, or select a project to view its source code on GitHub.</p>
   <div class="projects" id="projGrid"></div>
 </section>
 
@@ -160,12 +165,12 @@ const CONFIG = {
     { group: "Data & tools", items: ["MySQL", "MongoDB", "Git & GitHub", "Figma"] }
   ],
 
-  // Each project opens its GitHub link in a new tab when clicked
+  // link = GitHub repo (whole card is clickable). live = your hosted demo URL; leave "" to hide the Live demo button
   projects: [
-    { title: "AI Travel",  desc: "A Python project that uses AI to help plan trips and travel ideas.", tags: ["Python", "AI"], link: "https://github.com/22kavyapatel/AI-Travel-" },
-    { title: "MiniBank",   desc: "A Java banking application built with object-oriented programming: accounts and transactions.", tags: ["Java", "OOP"], link: "https://github.com/22kavyapatel/D26IT112-OOP-kavya/tree/main/MiniBank/src" },
-    { title: "CyberGuard", desc: "A cybersecurity project built in Python for the Bob AI hackathon.", tags: ["Python", "Hackathon", "Security"], link: "https://github.com/22kavyapatel/bob-ai-hackathon-cyberguard" },
-    { title: "StudentHub", desc: "A student-focused web project built with HTML and CSS.", tags: ["HTML", "CSS"], link: "https://github.com/22kavyapatel/Studenthub" }
+    { title: "AI Travel",  desc: "A Python project that uses AI to help plan trips and travel ideas.", tags: ["Python", "AI"], link: "https://github.com/22kavyapatel/AI-Travel-", live: "" },
+    { title: "MiniBank",   desc: "A Java banking application built with object-oriented programming: accounts and transactions.", tags: ["Java", "OOP"], link: "https://github.com/22kavyapatel/D26IT112-OOP-kavya/tree/main/MiniBank/src", live: "" },
+    { title: "CyberGuard", desc: "A cybersecurity project built in Python for the Bob AI hackathon.", tags: ["Python", "Hackathon", "Security"], link: "https://github.com/22kavyapatel/bob-ai-hackathon-cyberguard", live: "" },
+    { title: "StudentHub", desc: "A student-focused web project built with HTML and CSS.", tags: ["HTML", "CSS"], link: "https://github.com/22kavyapatel/Studenthub", live: "" }
   ]
 };
 
@@ -185,10 +190,12 @@ document.getElementById("skillsGrid").innerHTML = CONFIG.skills.map(g =>
 
 const GH = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-8.3 8.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H6v11h11v-5h2v7H4V5h1z"/></svg>';
 document.getElementById("projGrid").innerHTML = CONFIG.projects.map(p =>
-  '<a class="proj" href="' + p.link + '" target="_blank" rel="noopener noreferrer" aria-label="' + p.title + ', open on GitHub">' +
-  "<h3>" + p.title + "</h3><p>" + p.desc + "</p>" +
+  '<div class="proj"><h3>' + p.title + "</h3><p>" + p.desc + "</p>" +
   '<div class="tags">' + p.tags.map(t => "<span>" + t + "</span>").join("") + "</div>" +
-  '<span class="go">' + GH + "View on GitHub</span></a>").join("");
+  '<div class="actions">' +
+  (p.live ? '<a class="live" href="' + p.live + '" target="_blank" rel="noopener noreferrer">Live demo</a>' : "") +
+  '<a class="go" href="' + p.link + '" target="_blank" rel="noopener noreferrer" aria-label="' + p.title + ', open on GitHub">' + GH + "View on GitHub</a>" +
+  "</div></div>").join("");
 
 /* ========= 3. THE EYES FOLLOW THE CURSOR ========= */
 const IMG_W = 1145, IMG_H = 1374;
